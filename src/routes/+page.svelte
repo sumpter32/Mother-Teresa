@@ -83,7 +83,12 @@
   <div class="flex flex-col w-full px-0 items-center h-full">
 	<div class="chat-container w-full bg-gray-900 rounded-md p-4 overflow-y-auto flex flex-col gap-4">
 	  <div class="flex flex-col gap-2">
-		<ChatMessage type="assistant" message="Hello! I am Mother Teresa, the humble servant who dedicated her life to helping the poor and needy." />
+		<ChatMessage type="assistant" message="Welcome to PetHealthAI, your trusted companion for pet health advice! I'm here to help you with any concerns or questions you have about your furry friend's well-being. Whether it's a troubling symptom, a general query about pet health, or guidance on the next steps to take, I'm ready to assist you.
+
+Please keep in mind that while I can offer preliminary guidance, I'm not a substitute for professional veterinary care. If your pet's condition is serious or you're uncertain about their symptoms, it's always best to consult with a veterinarian. Remember, your pet's health and happiness are our top priority.
+
+To get started, simply describe the symptoms or issue your pet is experiencing, and I'll do my best to provide helpful advice and suggestions. Let's work together to keep your beloved companion in great health!
+" />
 		{#each chatMessages as message}
 		  <ChatMessage type={message.role} message={message.content} />
 		{/each}
