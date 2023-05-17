@@ -123,9 +123,12 @@
         height: 48px;
     }
 }
+
+.input {
+    color: black;
+}
 	
-  </style>
-<div class="flex flex-col w-full px-0 items-center h-full parent-container">
+</style>
   <div class="flex flex-col w-full px-0 items-center h-full">
 	<div class="chat-container w-full transparent rounded-md p-4 overflow-y-auto flex flex-col gap-4">
 	  <div class="flex flex-col gap-2">
@@ -153,7 +156,5 @@
         </button>
     </div>
 </form>
-
-
   </div>
 </div>
