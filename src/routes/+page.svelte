@@ -18,6 +18,11 @@
       return [];
     }
   }
+  
+  function clearChat() {
+	chatMessages = [];
+	saveChatMessages();
+}
 
   let query: string = ''
   let answer: string = ''
@@ -87,25 +92,42 @@
 
 <style>
 	.parent-container {
-      height: 100vh;
-     }
+    height: 100vh;
+    background-color: transparent !important;
+}
 	 
 	 .chat-container {
 	  height: calc(99vh - 3.5rem); /* Subtract the height of the input area */
 	  padding-bottom: env(safe-area-inset-bottom); /* Add padding for the virtual keyboard on mobile devices */
 	}
 	.input-area {
-	  position: fixed;
-	  bottom: 0;
-	  left: 0;
-	  right: 0;
-	  padding: 0 env(safe-area-inset-left) 0 env(safe-area-inset-right); /* Add padding for the virtual keyboard on mobile devices */
-	}
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 0 env(safe-area-inset-left) 0 env(safe-area-inset-right);
+}
+
+.btn {
+    padding: 5px; 
+}
+
+.btn img {
+    width: 24px;
+    height: 24px;
+}
+
+@media (min-width: 768px) {
+    .btn img {
+        width: 48px;
+        height: 48px;
+    }
+}
 	
   </style>
 <div class="flex flex-col w-full px-0 items-center h-full parent-container">
   <div class="flex flex-col w-full px-0 items-center h-full">
-	<div class="chat-container w-full bg-gray-900 rounded-md p-4 overflow-y-auto flex flex-col gap-4">
+	<div class="chat-container w-full transparent rounded-md p-4 overflow-y-auto flex flex-col gap-4">
 	  <div class="flex flex-col gap-2">
 		<ChatMessage type="assistant" message="Hello and welcome to Pet Pals Connect! I'm your friendly AI veterinary guide, here to help you navigate the world of pet health and wellness. Whether you're dealing with a specific issue or just have general questions about your furry friend's well-being, I'm all ears! Remember, though I aim to provide helpful insights, I'm not a substitute for professional veterinary care. For urgent or serious concerns, it's crucial to consult with a qualified vet. So, how can I assist you in keeping your pet pal in top shape today?" />
 		{#each chatMessages as message}
@@ -120,12 +142,18 @@
 	  </div>
 	  <div class="" bind:this={scrollToDiv} />
 	</div>
-	<form
-	  class="input-area flex w-full rounded-md gap-4 bg-gray-900 p-4"
-	  on:submit|preventDefault={() => handleSubmit()}
-	>
-	  <input type="text" class="input input-bordered flex-grow" bind:value={query} />
-	  <button type="submit" class="btn btn-accent"> Send </button>
-	</form>
+	<form class="input-area flex w-full rounded-md gap-4 bg-gray-900 p-4" on:submit|preventDefault={() => handleSubmit()}>
+    <button type="button" class="btn btn-accent" on:click={clearChat}>
+        <img src="./clear.png" alt="Clear Chat" />
+    </button>
+    <div class="relative flex-grow">
+        <input type="text" class="input input-bordered w-full pr-10" bind:value={query} />
+        <button type="submit" class="btn btn-accent absolute right-1 top-1/2 transform -translate-y-1/2">
+            <img src="./send.png" alt="Send" />
+        </button>
+    </div>
+</form>
+
+
   </div>
 </div>
