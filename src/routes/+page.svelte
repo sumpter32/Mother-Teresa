@@ -1,23 +1,41 @@
 <script lang="ts">
-	import ChatMessage from '$lib/components/ChatMessage.svelte'
-	import type { ChatCompletionRequestMessage } from 'openai'
-	import { SSE } from 'sse.js'
+  import { onMount } from 'svelte';
+  import ChatMessage from '$lib/components/ChatMessage.svelte'
+  import type { ChatCompletionRequestMessage } from 'openai'
+  import { SSE } from 'sse.js'
 
-	let query: string = ''
-	let answer: string = ''
-	let loading: boolean = false
-	let chatMessages: ChatCompletionRequestMessage[] = []
-	let scrollToDiv: HTMLDivElement
+  function saveChatMessages() {
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('chatMessages', JSON.stringify(chatMessages));
+    }
+  }
+	
+  function loadChatMessages() {
+    if (typeof window !== 'undefined') {
+      const loadedMessages = localStorage.getItem('chatMessages');
+      return loadedMessages ? JSON.parse(loadedMessages) : [];
+    } else {
+      return [];
+    }
+  }
 
-	function scrollToBottom() {
-		setTimeout(function () {
-			scrollToDiv.scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'nearest' })
-		}, 100)
-	}
+  let query: string = ''
+  let answer: string = ''
+  let loading: boolean = false
+  export let chatMessages: ChatCompletionRequestMessage[] = []
 
-	const handleSubmit = async () => {
-		loading = true
-		chatMessages = [...chatMessages, { role: 'user', content: query }]
+  let scrollToDiv: HTMLDivElement
+
+  function scrollToBottom() {
+    setTimeout(function () {
+      scrollToDiv.scrollIntoView({ behavior: 'smooth', block: 'end', inline: 'nearest' })
+    }, 100)
+  }
+
+  const handleSubmit = async () => {
+    loading = true;
+    chatMessages = [...chatMessages, { role: 'user', content: query }];
+    saveChatMessages();
 
 		const eventSource = new SSE('/api/chat', {
 			headers: {
@@ -37,6 +55,7 @@
 				if (e.data === '[DONE]') {
 					chatMessages = [...chatMessages, { role: 'assistant', content: answer }]
 					answer = ''
+					saveChatMessages() // Save messages after assistant response
 					return
 				}
 
@@ -52,15 +71,20 @@
 		})
 		eventSource.stream()
 		scrollToBottom()
-	}
+  }
 
-	function handleError<T>(err: T) {
-		loading = false
-		query = ''
-		answer = ''
-		console.error(err)
-	}
+  function handleError<T>(err: T) {
+    loading = false
+    query = ''
+    answer = ''
+    console.error(err)
+  }
+
+  onMount(() => {
+    chatMessages = loadChatMessages(); // load chat messages on mount
+  })
 </script>
+
 <style>
 	.parent-container {
       height: 100vh;
@@ -83,12 +107,7 @@
   <div class="flex flex-col w-full px-0 items-center h-full">
 	<div class="chat-container w-full bg-gray-900 rounded-md p-4 overflow-y-auto flex flex-col gap-4">
 	  <div class="flex flex-col gap-2">
-		<ChatMessage type="assistant" message="Welcome to PetHealthAI, your trusted companion for pet health advice! I'm here to help you with any concerns or questions you have about your furry friend's well-being. Whether it's a troubling symptom, a general query about pet health, or guidance on the next steps to take, I'm ready to assist you.
-
-Please keep in mind that while I can offer preliminary guidance, I'm not a substitute for professional veterinary care. If your pet's condition is serious or you're uncertain about their symptoms, it's always best to consult with a veterinarian. Remember, your pet's health and happiness are our top priority.
-
-To get started, simply describe the symptoms or issue your pet is experiencing, and I'll do my best to provide helpful advice and suggestions. Let's work together to keep your beloved companion in great health!
-" />
+		<ChatMessage type="assistant" message="Hello and welcome to Pet Pals Connect! I'm your friendly AI veterinary guide, here to help you navigate the world of pet health and wellness. Whether you're dealing with a specific issue or just have general questions about your furry friend's well-being, I'm all ears! Remember, though I aim to provide helpful insights, I'm not a substitute for professional veterinary care. For urgent or serious concerns, it's crucial to consult with a qualified vet. So, how can I assist you in keeping your pet pal in top shape today?" />
 		{#each chatMessages as message}
 		  <ChatMessage type={message.role} message={message.content} />
 		{/each}
