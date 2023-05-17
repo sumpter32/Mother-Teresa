@@ -107,11 +107,6 @@
     right: 0;
     padding: 0 env(safe-area-inset-left) 0 env(safe-area-inset-right);
 }
-
-.btn {
-    padding: 5px; 
-}
-
 .btn img {
     width: 24px;
     height: 24px;
@@ -124,11 +119,13 @@
     }
 }
 
-.input {
+/* Add this class to change the text color of the input box */
+.input-bordered {
     color: black;
 }
-	
 </style>
+
+<div class="flex flex-col w-full px-0 items-center h-full parent-container">
   <div class="flex flex-col w-full px-0 items-center h-full">
 	<div class="chat-container w-full transparent rounded-md p-4 overflow-y-auto flex flex-col gap-4">
 	  <div class="flex flex-col gap-2">
@@ -156,5 +153,5 @@
         </button>
     </div>
 </form>
-  </div>
+</div>
 </div>
